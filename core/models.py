@@ -59,3 +59,5 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"{self.driver} - {self.vehicle} - {self.route} ({self.status})"
+    
+    

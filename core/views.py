@@ -16,12 +16,16 @@ def dashboard(request):
     }
 
     return render(request, 'core/dashboard.html', context)
+
+
 def route_list(request):
     routes = Route.objects.all()
 
     return render(request, 'core/routes.html', {
         'routes': routes
     })
+
+
 def fare_calculator(request):
     routes = Route.objects.all()
     result = None
@@ -43,4 +47,12 @@ def fare_calculator(request):
     return render(request, 'core/fare.html', {
         'routes': routes,
         'result': result
+    })
+
+
+def trips(request):
+    trips = Assignment.objects.all()
+
+    return render(request, 'core/trips.html', {
+        'trips': trips
     })
