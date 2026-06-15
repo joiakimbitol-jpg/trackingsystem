@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bohol Move - Routes</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #0d6efd;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        a {
+            display: inline-block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🚍 Bohol Move - Routes</h1>
+
+<a href="/">⬅ Back to Dashboard</a>
+
+<div class="container">
+    <table>
+        <tr>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Distance (km)</th>
+            <th>Fare</th>
+        </tr>
+
+        {% for route in routes %}
+        <tr>
+            <td>{{ route.origin }}</td>
+            <td>{{ route.destination }}</td>
+            <td>{{ route.distance_km }}</td>
+            <td>₱{{ route.fare }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No routes available</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+</body>
+</html>

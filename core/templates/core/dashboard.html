@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bohol Smart Transit Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .box {
+            display: inline-block;
+            width: 200px;
+            margin: 10px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🚍 Bohol Smart Transit Dashboard</h1>
+
+<div class="box">
+    <h3>Drivers</h3>
+    <div class="number">{{ total_drivers }}</div>
+</div>
+
+<div class="box">
+    <h3>Vehicles</h3>
+    <div class="number">{{ total_vehicles }}</div>
+</div>
+
+<div class="box">
+    <h3>Routes</h3>
+    <div class="number">{{ total_routes }}</div>
+</div>
+
+<div class="box">
+    <h3>Active Assignments</h3>
+    <div class="number">{{ active_assignments }}</div>
+</div>
+
+</body>
+</html>
