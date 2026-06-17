@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Driver, Vehicle, Route, Assignment, Alert
 
@@ -81,4 +81,39 @@ def alerts(request):
 
     return render(request, 'core/alerts.html', {
         'alerts': alerts
+    })
+def dispatch(request):
+    drivers = Driver.objects.all()
+    vehicles = Vehicle.objects.all()
+    routes = Route.objects.all()
+
+    if request.method == 'POST':
+        driver_id = request.POST['driver']
+        vehicle_id = request.POST['vehicle']
+        route_id = request.POST['route']
+
+        driver = Driver.objects.get(id=driver_id)
+        vehicle = Vehicle.objects.get(id=vehicle_id)
+        route = Route.objects.get(id=route_id)
+
+        Assignment.objects.create(
+            driver=driver,
+            vehicle=vehicle,
+            route=route,
+            status='PENDING'
+        )
+
+        # 🔥 ADD THIS (THIS IS WHAT YOU MISSING)
+        driver.status = "Busy"
+        driver.save()
+
+        vehicle.status = "Busy"
+        vehicle.save()
+
+        return redirect('trips')
+
+    return render(request, 'core/dispatch.html', {
+        'drivers': drivers,
+        'vehicles': vehicles,
+        'routes': routes,
     })

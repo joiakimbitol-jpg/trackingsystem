@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispatch System - BOHOL MOVE</title>
+</head>
+<body>
+
+    <h1>🚍 Dispatch System</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <p>
+            <label for="driver">Driver:</label>
+            <select id="driver" name="driver" title="Select Driver">
+                {% for driver in drivers %}
+                    <option value="{{ driver.id }}">
+                        {{ driver.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="vehicle">Vehicle:</label>
+            <select id="vehicle" name="vehicle" title="Select Vehicle">
+                {% for vehicle in vehicles %}
+                    <option value="{{ vehicle.id }}">
+                        {{ vehicle }}
+                    </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="route">Route:</label>
+            <select id="route" name="route" title="Select Route">
+                {% for route in routes %}
+                    <option value="{{ route.id }}">
+                        {{ route }}
+                    </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <button type="submit">
+            Assign Trip
+        </button>
+
+    </form>
+
+</body>
+</html>
