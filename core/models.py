@@ -59,5 +59,13 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"{self.driver} - {self.vehicle} - {self.route} ({self.status})"
+
+class Alert(models.Model):
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
     
     

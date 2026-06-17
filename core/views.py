@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Driver, Vehicle, Route, Assignment
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Driver, Vehicle, Route, Assignment, Alert
 
 # DASHBOARD VIEW
 def dashboard(request):
@@ -7,12 +8,24 @@ def dashboard(request):
     total_vehicles = Vehicle.objects.count()
     total_routes = Route.objects.count()
     active_assignments = Assignment.objects.filter(status='ACTIVE').count()
+    latest_alerts = Alert.objects.order_by('-created_at')[:5]
+
+    active_trips = Assignment.objects.filter(status='ACTIVE').count()
+    pending_trips = Assignment.objects.filter(status='PENDING').count()
+    completed_trips = Assignment.objects.filter(status='COMPLETED').count()
+    cancelled_trips = Assignment.objects.filter(status='CANCELLED').count()
 
     context = {
         'total_drivers': total_drivers,
         'total_vehicles': total_vehicles,
         'total_routes': total_routes,
         'active_assignments': active_assignments,
+        'latest_alerts': latest_alerts,
+
+        'active_trips': active_trips,
+        'pending_trips': pending_trips,
+        'completed_trips': completed_trips,
+        'cancelled_trips': cancelled_trips,
     }
 
     return render(request, 'core/dashboard.html', context)
@@ -55,4 +68,17 @@ def trips(request):
 
     return render(request, 'core/trips.html', {
         'trips': trips
+    })
+def update_trip_status(request, id, status):
+    trip = get_object_or_404(Assignment, id=id)
+    trip.status = status
+    trip.save()
+
+    return redirect('trips')
+
+def alerts(request):
+    alerts = Alert.objects.order_by('-created_at')
+
+    return render(request, 'core/alerts.html', {
+        'alerts': alerts
     })

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Route, Vehicle, Driver, Assignment
+from .models import Route, Vehicle, Driver, Assignment, Alert
 
 
 #register your models here 
@@ -25,3 +25,7 @@ class AssignmentAdmin(admin.ModelAdmin):
     list_display = ('driver', 'vehicle', 'route', 'status', 'created_at')
     list_filter = ('status',)
     search_fields = ('driver__name', 'vehicle__vehicle_number')
+@admin.register(Alert)
+class AlertAdmin(admin.ModelAdmin):
+    list_display = ('title', 'created_at')
+    search_fields = ('title',)

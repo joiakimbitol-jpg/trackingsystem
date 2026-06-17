@@ -12,27 +12,84 @@
             padding: 20px;
         }
 
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         th {
             background: #0d6efd;
             color: white;
+            padding: 15px;
+            font-size: 14px;
         }
+
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f1f5ff;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .btn-active {
+            background: green;
+            color: white;
+        }
+
+        .btn-completed {
+            background: blue;
+            color: white;
+        }
+
+        .btn-cancelled {
+            background: red;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .status-active,
+        .status-pending,
+        .status-completed,
+        .status-cancelled {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .status-active { background: green; }
+        .status-pending { background: orange; }
+        .status-completed { background: blue; }
+        .status-cancelled { background: red; }
     </style>
 </head>
+
 <body>
 
-<h1>🚍 Available Trips</h1>
+<h1>🚍 Available Trips - BOHOL MOVE</h1>
 
 <table>
     <tr>
@@ -47,7 +104,38 @@
         <td>{{ trip.driver }}</td>
         <td>{{ trip.vehicle }}</td>
         <td>{{ trip.route }}</td>
-        <td>{{ trip.status }}</td>
+
+        <td>
+            {% if trip.status == "ACTIVE" %}
+                <span class="status-active">ACTIVE</span>
+
+            {% elif trip.status == "PENDING" %}
+                <span class="status-pending">PENDING</span>
+
+            {% elif trip.status == "COMPLETED" %}
+                <span class="status-completed">COMPLETED</span>
+
+            {% elif trip.status == "CANCELLED" %}
+                <span class="status-cancelled">CANCELLED</span>
+
+            {% else %}
+                <span>{{ trip.status }}</span>
+            {% endif %}
+
+            <br><br>
+
+            <a class="btn-active" href="{% url 'update_trip_status' trip.id 'ACTIVE' %}">
+                Activate
+            </a>
+
+            <a class="btn-completed" href="{% url 'update_trip_status' trip.id 'COMPLETED' %}">
+                Complete
+            </a>
+
+            <a class="btn-cancelled" href="{% url 'update_trip_status' trip.id 'CANCELLED' %}">
+                Cancel
+            </a>
+        </td>
     </tr>
     {% endfor %}
 </table>

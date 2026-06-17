@@ -142,6 +142,26 @@
                 <h3>Active Assignments</h3>
                 <div class="number">{{ active_assignments }}</div>
             </div>
+                <div class="card">
+        <h3>Active Trips</h3>
+
+    <div class="number">{{ active_trips }}</div>
+            </div>
+
+    <div class="card">
+        <h3>Pending Trips</h3>
+            <div class="number">{{ pending_trips }}</div>
+        </div>
+
+        <div class="card">
+        <h3>Completed Trips</h3>
+        <div class="number">{{ completed_trips }}</div>
+    </div>
+
+    <div class="card">
+        <h3>Cancelled Trips</h3>
+    <div class="number">{{ cancelled_trips }}</div>
+</div>
 
         </div>
 
@@ -158,10 +178,26 @@
             <a href="{% url 'trips' %}" class="btn trips-btn">
                 🚍 Active Trips
             </a>
+            <a href="{% url 'alerts' %}" class="btn routes-btn">
+    📢 Travel Alerts
+</a>
 
         </div>
 
         <div class="overview">
+            <h2>📢 Latest Travel Alerts</h2>
+
+    {% for alert in latest_alerts %}
+    <div class="alert-item">
+        <h4>{{ alert.title }}</h4>
+        <p>{{ alert.message }}</p>
+        <small>{{ alert.created_at }}</small>
+    </div>
+    <hr class="alert-divider">
+    {  % empty %}
+     <p>No travel alerts available.</p>
+    {% endfor %}
+</div>
             <h2>System Overview</h2>
 
             <p>
@@ -183,6 +219,8 @@
         </div>
 
         <div class="footer">
+            
+
             <hr class="footer-line">
             <p>© 2026 Bohol Smart Transit System. All Rights Reserved.</p>
         </div>

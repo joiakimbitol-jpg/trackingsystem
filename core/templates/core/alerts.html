@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Alerts - BOHOL MOVE</title>
+</head>
+<body>
+
+<h1>📢 Travel Alerts</h1>
+
+{% for alert in alerts %}
+    <hr>
+    <h2>{{ alert.title }}</h2>
+    <p>{{ alert.message }}</p>
+    <small>{{ alert.created_at }}</small>
+{% empty %}
+    <p>No alerts available.</p>
+{% endfor %}
+
+</body>
+</html>
