@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Driver, Vehicle, Route, Assignment, Alert
@@ -95,27 +97,29 @@ def dispatch(request):
     routes = Route.objects.all()
 
     if request.method == 'POST':
-        driver_id = request.POST['driver']
-        vehicle_id = request.POST['vehicle']
-        route_id = request.POST['route']
 
-        driver = Driver.objects.get(id=driver_id)
-        vehicle = Vehicle.objects.get(id=vehicle_id)
-        route = Route.objects.get(id=route_id)
+        driver_id = request.POST.get('driver')
+        vehicle_id = request.POST.get('vehicle')
+        route_id = request.POST.get('route')
 
-        Assignment.objects.create(
-            driver=driver,
-            vehicle=vehicle,
-            route=route,
-            status='PENDING'
-        )
+        if driver_id and vehicle_id and route_id:
 
-        # 🔥 ADD THIS (THIS IS WHAT YOU MISSING)
-        driver.status = "Busy"
-        driver.save()
+            driver = Driver.objects.get(id=driver_id)
+            vehicle = Vehicle.objects.get(id=vehicle_id)
+            route = Route.objects.get(id=route_id)
 
-        vehicle.status = "Busy"
-        vehicle.save()
+            Assignment.objects.create(
+                driver=driver,
+                vehicle=vehicle,
+                route=route,
+                status='PENDING'
+            )
+
+            driver.status = "Busy"
+            driver.save()
+
+            vehicle.status = "Busy"
+            vehicle.save()
 
         return redirect('trips')
 
