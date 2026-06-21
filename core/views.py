@@ -71,11 +71,18 @@ def trips(request):
     })
 def update_trip_status(request, id, status):
     trip = get_object_or_404(Assignment, id=id)
+
     trip.status = status
     trip.save()
 
-    return redirect('trips')
+    if status == 'COMPLETED':
+        trip.driver.status = 'Available'
+        trip.driver.save()
 
+        trip.vehicle.status = 'Available'
+        trip.vehicle.save()
+
+    return redirect('trips')
 def alerts(request):
     alerts = Alert.objects.order_by('-created_at')
 
@@ -83,8 +90,8 @@ def alerts(request):
         'alerts': alerts
     })
 def dispatch(request):
-    drivers = Driver.objects.all()
-    vehicles = Vehicle.objects.all()
+    drivers = Driver.objects.filter(status='Available')
+    vehicles = Vehicle.objects.filter(status='Available')
     routes = Route.objects.all()
 
     if request.method == 'POST':
@@ -117,3 +124,15 @@ def dispatch(request):
         'vehicles': vehicles,
         'routes': routes,
     })
+def reports(request):
+    context = {
+        'total_drivers': Driver.objects.count(),
+        'total_vehicles': Vehicle.objects.count(),
+        'total_routes': Route.objects.count(),
+        'total_assignments': Assignment.objects.count(),
+        'active_trips': Assignment.objects.filter(status='ACTIVE').count(),
+        'completed_trips': Assignment.objects.filter(status='COMPLETED').count(),
+        'cancelled_trips': Assignment.objects.filter(status='CANCELLED').count(),
+    }
+
+    return render(request, 'core/reports.html', context)
