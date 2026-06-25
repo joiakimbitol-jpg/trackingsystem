@@ -1,10 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from urllib import request
+
 
 from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Driver, Vehicle, Route, Assignment, Alert
 
 # DASHBOARD VIEW
+@login_required
 def dashboard(request):
     total_drivers = Driver.objects.count()
     total_vehicles = Vehicle.objects.count()
