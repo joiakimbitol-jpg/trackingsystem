@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from urllib import request
+from django.http import HttpResponse
 
 
 from django.shortcuts import render, redirect
@@ -9,6 +10,11 @@ from .models import Driver, Vehicle, Route, Assignment, Alert
 # DASHBOARD VIEW
 @login_required
 def dashboard(request):
+    if not (
+    request.user.groups.filter(name='Admin').exists()
+    or request.user.groups.filter(name='Operator').exists()
+):
+        return HttpResponse("Access Denied")
     total_drivers = Driver.objects.count()
     total_vehicles = Vehicle.objects.count()
     total_routes = Route.objects.count()
@@ -68,7 +74,13 @@ def fare_calculator(request):
     })
 
 
+@login_required
 def trips(request):
+    if not (
+    request.user.groups.filter(name='Admin').exists()
+    or request.user.groups.filter(name='Operator').exists()
+):
+        return HttpResponse("Access Denied")
     trips = Assignment.objects.all()
 
     return render(request, 'core/trips.html', {
