@@ -10,10 +10,13 @@ from .models import Driver, Vehicle, Route, Assignment, Alert
 # DASHBOARD VIEW
 @login_required
 def dashboard(request):
-    if not (
-    request.user.groups.filter(name='Admin').exists()
-    or request.user.groups.filter(name='Operator').exists()
-):
+    if request.user.is_superuser:
+        pass
+
+    elif request.user.groups.filter(name='Operator').exists():
+        pass
+
+    else:
         return HttpResponse("Access Denied")
     total_drivers = Driver.objects.count()
     total_vehicles = Vehicle.objects.count()
@@ -77,16 +80,24 @@ def fare_calculator(request):
 @login_required
 def trips(request):
     if not (
-    request.user.groups.filter(name='Admin').exists()
-    or request.user.groups.filter(name='Operator').exists()
-):
+        request.user.is_superuser
+        or request.user.groups.filter(name='Operator').exists()
+    ):
         return HttpResponse("Access Denied")
+
     trips = Assignment.objects.all()
 
     return render(request, 'core/trips.html', {
         'trips': trips
     })
+@login_required
 def update_trip_status(request, id, status):
+    if not (
+        request.user.is_superuser
+        or request.user.groups.filter(name='Operator').exists()
+    ):
+        return HttpResponse("Access Denied")
+
     trip = get_object_or_404(Assignment, id=id)
 
     trip.status = status
@@ -100,13 +111,27 @@ def update_trip_status(request, id, status):
         trip.vehicle.save()
 
     return redirect('trips')
+@login_required
 def alerts(request):
+
+    if not (
+        request.user.is_superuser
+        or request.user.groups.filter(name='Operator').exists()
+    ):
+        return HttpResponse("Access Denied")
     alerts = Alert.objects.order_by('-created_at')
 
     return render(request, 'core/alerts.html', {
         'alerts': alerts
     })
+@login_required
 def dispatch(request):
+
+    if not (
+        request.user.is_superuser
+        or request.user.groups.filter(name='Operator').exists()
+    ):
+        return HttpResponse("Access Denied")
     drivers = Driver.objects.filter(status='Available')
     vehicles = Vehicle.objects.filter(status='Available')
     routes = Route.objects.all()
@@ -143,7 +168,14 @@ def dispatch(request):
         'vehicles': vehicles,
         'routes': routes,
     })
+@login_required
 def reports(request):
+
+    if not (
+        request.user.is_superuser
+        or request.user.groups.filter(name='Operator').exists()
+    ):
+        return HttpResponse("Access Denied")
     context = {
         'total_drivers': Driver.objects.count(),
         'total_vehicles': Vehicle.objects.count(),
