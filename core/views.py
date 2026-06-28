@@ -1,9 +1,20 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from urllib import request
+from django.http import HttpResponse
+
+
+from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Driver, Vehicle, Route, Assignment, Alert
 
 # DASHBOARD VIEW
+@login_required
 def dashboard(request):
+    if not (
+    request.user.groups.filter(name='Admin').exists()
+    or request.user.groups.filter(name='Operator').exists()
+):
+        return HttpResponse("Access Denied")
     total_drivers = Driver.objects.count()
     total_vehicles = Vehicle.objects.count()
     total_routes = Route.objects.count()
@@ -63,7 +74,13 @@ def fare_calculator(request):
     })
 
 
+@login_required
 def trips(request):
+    if not (
+    request.user.groups.filter(name='Admin').exists()
+    or request.user.groups.filter(name='Operator').exists()
+):
+        return HttpResponse("Access Denied")
     trips = Assignment.objects.all()
 
     return render(request, 'core/trips.html', {
@@ -71,14 +88,70 @@ def trips(request):
     })
 def update_trip_status(request, id, status):
     trip = get_object_or_404(Assignment, id=id)
+
     trip.status = status
     trip.save()
 
-    return redirect('trips')
+    if status == 'COMPLETED':
+        trip.driver.status = 'Available'
+        trip.driver.save()
 
+        trip.vehicle.status = 'Available'
+        trip.vehicle.save()
+
+    return redirect('trips')
 def alerts(request):
     alerts = Alert.objects.order_by('-created_at')
 
     return render(request, 'core/alerts.html', {
         'alerts': alerts
     })
+def dispatch(request):
+    drivers = Driver.objects.filter(status='Available')
+    vehicles = Vehicle.objects.filter(status='Available')
+    routes = Route.objects.all()
+
+    if request.method == 'POST':
+
+        driver_id = request.POST.get('driver')
+        vehicle_id = request.POST.get('vehicle')
+        route_id = request.POST.get('route')
+
+        if driver_id and vehicle_id and route_id:
+
+            driver = Driver.objects.get(id=driver_id)
+            vehicle = Vehicle.objects.get(id=vehicle_id)
+            route = Route.objects.get(id=route_id)
+
+            Assignment.objects.create(
+                driver=driver,
+                vehicle=vehicle,
+                route=route,
+                status='PENDING'
+            )
+
+            driver.status = "Busy"
+            driver.save()
+
+            vehicle.status = "Busy"
+            vehicle.save()
+
+        return redirect('trips')
+
+    return render(request, 'core/dispatch.html', {
+        'drivers': drivers,
+        'vehicles': vehicles,
+        'routes': routes,
+    })
+def reports(request):
+    context = {
+        'total_drivers': Driver.objects.count(),
+        'total_vehicles': Vehicle.objects.count(),
+        'total_routes': Route.objects.count(),
+        'total_assignments': Assignment.objects.count(),
+        'active_trips': Assignment.objects.filter(status='ACTIVE').count(),
+        'completed_trips': Assignment.objects.filter(status='COMPLETED').count(),
+        'cancelled_trips': Assignment.objects.filter(status='CANCELLED').count(),
+    }
+
+    return render(request, 'core/reports.html', context)

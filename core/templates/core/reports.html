@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOHOL MOVE Reports</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        .report-card {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 12px;
+            margin: 10px 0;
+            background: #ecf0f1;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-card">
+        <h1>📊 BOHOL MOVE Reports</h1>
+
+        <ul>
+            <li>Total Drivers: {{ total_drivers }}</li>
+            <li>Total Vehicles: {{ total_vehicles }}</li>
+            <li>Total Routes: {{ total_routes }}</li>
+            <li>Total Assignments: {{ total_assignments }}</li>
+            <li>Completed Trips: {{ completed_trips }}</li>
+            <li>Cancelled Trips: {{ cancelled_trips }}</li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
