@@ -14,4 +14,9 @@ urlpatterns = [
     path('driver-dashboard/', views.driver_dashboard, name='driver_dashboard'),
     path('passenger-dashboard/', views.passenger_dashboard, name='passenger_dashboard'),
     path('login-redirect/', views.login_redirect, name='login_redirect'),
+    path(
+    'driver/start-trip/<int:id>/',
+    views.driver_start_trip,
+    name='driver_start_trip'
+),
 ]

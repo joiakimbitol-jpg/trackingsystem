@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # ROUTE MODULE
 class Route(models.Model):
@@ -30,6 +31,13 @@ class Vehicle(models.Model):
 
 # DRIVER MODULE
 class Driver(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
     name = models.CharField(max_length=100)
     license_number = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=20)

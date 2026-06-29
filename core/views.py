@@ -202,7 +202,16 @@ def driver_dashboard(request):
     if not request.user.groups.filter(name='Driver').exists():
         return HttpResponse("Access Denied")
 
-    return render(request, 'core/driver_dashboard.html')
+    driver = Driver.objects.get(user=request.user)
+
+    assignment = Assignment.objects.filter(
+        driver=driver
+    ).order_by('-created_at').first()
+
+    return render(request, 'core/driver_dashboard.html', {
+        'driver': driver,
+        'assignment': assignment,
+    })
 
 
 @login_required
@@ -227,3 +236,19 @@ def login_redirect(request):
         return redirect('passenger_dashboard')
 
     return redirect('dashboard')
+@login_required
+def driver_start_trip(request, id):
+
+    if not request.user.groups.filter(name='Driver').exists():
+        return HttpResponse("Access Denied")
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=id,
+        driver__user=request.user
+    )
+
+    assignment.status = "ACTIVE"
+    assignment.save()
+
+    return redirect('driver_dashboard')
