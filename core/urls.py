@@ -10,4 +10,8 @@ urlpatterns = [
     path('trip/update/<int:id>/<str:status>/', views.update_trip_status, name='update_trip_status'),
     path('dispatch/', views.dispatch, name='dispatch'),
     path('reports/', views.reports, name='reports'),
+    path('operator-dashboard/', views.operator_dashboard, name='operator_dashboard'),
+    path('driver-dashboard/', views.driver_dashboard, name='driver_dashboard'),
+    path('passenger-dashboard/', views.passenger_dashboard, name='passenger_dashboard'),
+    path('login-redirect/', views.login_redirect, name='login_redirect'),
 ]

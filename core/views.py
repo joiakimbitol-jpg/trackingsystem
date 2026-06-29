@@ -10,6 +10,7 @@ from .models import Driver, Vehicle, Route, Assignment, Alert
 # DASHBOARD VIEW
 @login_required
 def dashboard(request):
+    
     if request.user.is_superuser:
         pass
 
@@ -187,3 +188,42 @@ def reports(request):
     }
 
     return render(request, 'core/reports.html', context)
+
+@login_required
+def operator_dashboard(request):
+    if not request.user.groups.filter(name='Operator').exists():
+        return HttpResponse("Access Denied")
+
+    return render(request, 'core/operator_dashboard.html')
+
+
+@login_required
+def driver_dashboard(request):
+    if not request.user.groups.filter(name='Driver').exists():
+        return HttpResponse("Access Denied")
+
+    return render(request, 'core/driver_dashboard.html')
+
+
+@login_required
+def passenger_dashboard(request):
+    if not request.user.groups.filter(name='Passenger').exists():
+        return HttpResponse("Access Denied")
+
+    return render(request, 'core/passenger_dashboard.html')
+@login_required
+def login_redirect(request):
+    
+    if request.user.is_superuser:
+        return redirect('dashboard')
+
+    elif request.user.groups.filter(name='Operator').exists():
+        return redirect('operator_dashboard')
+
+    elif request.user.groups.filter(name='Driver').exists():
+        return redirect('driver_dashboard')
+
+    elif request.user.groups.filter(name='Passenger').exists():
+        return redirect('passenger_dashboard')
+
+    return redirect('dashboard')
