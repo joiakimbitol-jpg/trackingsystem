@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Driver, Vehicle, Route, Assignment, Alert
 
-# DASHBOARD VIEW
+# Main DASHBOARD VIEW
 @login_required
 def dashboard(request):
     
@@ -45,7 +45,7 @@ def dashboard(request):
 
     return render(request, 'core/dashboard.html', context)
 
-
+#route list view
 def route_list(request):
     routes = Route.objects.all()
 
@@ -53,7 +53,7 @@ def route_list(request):
         'routes': routes
     })
 
-
+#fare calculator view
 def fare_calculator(request):
     routes = Route.objects.all()
     result = None
@@ -77,7 +77,7 @@ def fare_calculator(request):
         'result': result
     })
 
-
+#trips view
 @login_required
 def trips(request):
     if not (
@@ -91,6 +91,7 @@ def trips(request):
     return render(request, 'core/trips.html', {
         'trips': trips
     })
+#update trip status view
 @login_required
 def update_trip_status(request, id, status):
     if not (
@@ -104,14 +105,16 @@ def update_trip_status(request, id, status):
     trip.status = status
     trip.save()
 
-    if status == 'COMPLETED':
-        trip.driver.status = 'Available'
-        trip.driver.save()
+    if status == 'COMPLETED' or status == 'CANCELLED':
+     trip.driver.status = 'Available'
+    trip.driver.save()
 
-        trip.vehicle.status = 'Available'
-        trip.vehicle.save()
+    trip.vehicle.status = 'Available'
+    trip.vehicle.save()
 
     return redirect('trips')
+
+#alerts view
 @login_required
 def alerts(request):
 
@@ -125,6 +128,8 @@ def alerts(request):
     return render(request, 'core/alerts.html', {
         'alerts': alerts
     })
+
+#Dispatch view
 @login_required
 def dispatch(request):
 
@@ -169,6 +174,8 @@ def dispatch(request):
         'vehicles': vehicles,
         'routes': routes,
     })
+
+#Reports view
 @login_required
 def reports(request):
 
@@ -189,6 +196,8 @@ def reports(request):
 
     return render(request, 'core/reports.html', context)
 
+#operator dashboard view
+
 @login_required
 def operator_dashboard(request):
     if not request.user.groups.filter(name='Operator').exists():
@@ -196,7 +205,7 @@ def operator_dashboard(request):
 
     return render(request, 'core/operator_dashboard.html')
 
-
+#Driver dashboard view
 @login_required
 def driver_dashboard(request):
     if not request.user.groups.filter(name='Driver').exists():
@@ -213,13 +222,22 @@ def driver_dashboard(request):
         'assignment': assignment,
     })
 
-
+#Passenger dashboard view
 @login_required
 def passenger_dashboard(request):
+
     if not request.user.groups.filter(name='Passenger').exists():
         return HttpResponse("Access Denied")
 
-    return render(request, 'core/passenger_dashboard.html')
+    assignments = Assignment.objects.filter(
+        status='ACTIVE'
+    )
+
+    return render(request, 'core/passenger_dashboard.html', {
+        'assignments': assignments,
+    })
+
+#Login redirect view
 @login_required
 def login_redirect(request):
     
@@ -236,6 +254,8 @@ def login_redirect(request):
         return redirect('passenger_dashboard')
 
     return redirect('dashboard')
+
+#Driver start trip view
 @login_required
 def driver_start_trip(request, id):
 
