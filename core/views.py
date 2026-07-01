@@ -105,8 +105,8 @@ def update_trip_status(request, id, status):
     trip.status = status
     trip.save()
 
-    if status == 'COMPLETED' or status == 'CANCELLED':
-     trip.driver.status = 'Available'
+    if status in ['COMPLETED', 'CANCELLED']:
+        trip.driver.status = 'Available'
     trip.driver.save()
 
     trip.vehicle.status = 'Available'
